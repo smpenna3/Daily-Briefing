@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Make a reminder!</h1>
+    <form method="post" action="{{ url_for('new_reminder') }}">
+        <p><label>Username:</label> <input type="text" name="user" required></p>
+        <p><label>Date:</label> <input type="text" name="date" required></p>
+        <p><label>Reminder:</label> <input type="text" name="reminder" required></p>
+        <p><button type="submit">Send</button></p>
+    </form>
+{% endblock %}
