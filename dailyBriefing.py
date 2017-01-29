@@ -127,8 +127,7 @@ def dailyJoke():
 	printerBreak()
 
 # Show this day in history fact
-def thisDayInHistory():
-	# Define three random indeces in the range of the json file
+def thisDayInHistory():	# Define three random indeces in the range of the json file
 	try:
 		i = random.randint(0, (len(tdih.json()['data']['Events'])-1))
 		j = random.randint(0, (len(tdih.json()['data']['Events'])-1))
@@ -188,12 +187,12 @@ def getWeather():
 	printer('Weather tomorrow in Boston: ' + str(tomorrow))
 	printerBreak() # print break line
 
-#header()
-#morningNews()
-#getWeather()
-#getReminders()
-#dailyJoke()
-#thisDayInHistory()
+header()
+morningNews()
+getWeather()
+getReminders()
+dailyJoke()
+thisDayInHistory()
 
 
 printerFeed()
