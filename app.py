@@ -10,6 +10,10 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
+db_path = os.path.join(os.path.dirname(__file__), 'app.db')
+db_uri = 'sqlite:///{}'.format(db_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+app.config['SECRET_KEY'] = 'mchacks demo zgb 0001'
 
 db = SQLAlchemy(app)
 api = Api(app)	
@@ -23,10 +27,10 @@ class Reminder(db.Model):
 	date_reminder = db.Column(db.String(20))
 	text = db.Column(db.Text)
 
-	def __init__(self, date_reminder, text, date_created=None):
-		self.user = None
+	def __init__(self, user, date_reminder, text, date_created=None):
+		self.user_id = user
 		if date_created is None:
-			date_created = datetime.utcnow()
+			date_created = datetime.now()
 		self.date_created = date_created
 		self.date_reminder = date_reminder
 		self.text = text
@@ -104,6 +108,10 @@ def home():
 @app.route('/signup', methods=['POST'])
 def signup():
 	session['username'] = request.form['username']
+	q = db.session.query(User.id).filter(User.username==session['username'])
+	if db.session.query(q.exists()).scalar():
+		flash('User already exists')
+		return redirect(url_for('home'))
 	user = User(session['username'])
 	db.session.add(user)
 	db.session.commit()
@@ -125,11 +133,16 @@ def new_reminder():
 	session['user'] = request.form['user']
 	session['date'] = request.form['date']
 	session['reminder'] = request.form['reminder']
-	rem = Reminder(session['date'], session['reminder'])
-	db.session.add(rem)
-	db.session.commit()
-	flash('Reminder successfully created')
-	return redirect(url_for('show_reminders'))
+	q = db.session.query(User.id).filter(User.username==session['user']).first()
+	if q:
+		q = q[0]
+		rem = Reminder(q, session['date'], session['reminder'])
+		db.session.add(rem)
+		db.session.commit()
+		flash('Reminder successfully created')
+		return redirect(url_for('show_reminders'))
+	flash('No user found')
+	return redirect(url_for('reminder_form'))
 
 @app.route('/getusers')
 def show_users():

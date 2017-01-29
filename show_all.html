@@ -12,30 +12,28 @@
 	   </style>
 	</head>
    <body>
-
-      {% block content %}
+		
+      <h3>Messages</h3>
       
-      <h3>Users</h3>
-
-      <table id="users">
+      <table>
          <thead>
             <tr>
                <th>Id</th>
-               <th>Username</th>
+               <th>User</th>
+               <th>Message</th>
             </tr>
          </thead>
          
          <tbody>
-            {% for x in users %}
+            {% for x in messages %}
                <tr>
                   <td class='id'>{{ x.id }}</td>
                   <td>{{ x.username }}</td>
+                  <td>{{ x.message }}</td>
                </tr>
             {% endfor %}
          </tbody>
       </table>
       
-      {% endblock %}
-
    </body>
 </html>

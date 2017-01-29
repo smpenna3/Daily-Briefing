@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Say something</h1>
+	<hr/>
+    <h3>Sign Up!</h3>
     <form method="post" action="{{ url_for('signup') }}">
         <p><label>Username:</label> <input type="text" name="username" required></p>
         <p><button type="submit">Send</button></p>
