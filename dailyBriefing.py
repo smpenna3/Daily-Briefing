@@ -17,8 +17,8 @@ for p in ports: # Look through each one
 ser = serial.Serial(arduinoPort, 9600) # Open the serial port on the arduino port address
 
 # Open a new instance of reddit to interface with the reddit API
-reddit = praw.Reddit(client_id='b7886IFMbdNIhA',
-   	                 client_secret='V3L9CIRkXf6-b9PXyP6Sx0-HKyE',
+reddit = praw.Reddit(client_id='client_ID',
+   	                 client_secret='client_ID',
        	             user_agent='')
 reddit.read_only = True # only read reddit posts don't allow editing
 
@@ -176,7 +176,7 @@ def thisDayInHistory():	# Define three random indeces in the range of the json f
 
 def getWeather():
 	# get the json file for the weather forecast
-	f = requests.get('http://api.wunderground.com/api/62cf407a8229ef86/geolookup/forecast/q/MA/Boston.json')
+	f = requests.get('http://api.wunderground.com/api/APIKEY/geolookup/forecast/q/MA/Boston.json')
 	
 	# parse out the forecast for today and for tomorrow
 	forecast = f.json()['forecast']['txt_forecast']['forecastday'][0]['fcttext']
