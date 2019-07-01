@@ -83,15 +83,86 @@ if(args.justify and not args.test):
 	else:
 		raise ValueError("Invalid justification option: " + str(args.justify))
 
+
+''' Iterate through each word and construct a string which will print 
+	properly with whole-word text wrapping
+
+	It is better to have the printer print a single string instead of
+	having to print multiple strings, so spaces are added to "pad" each
+	line to be of the correct length, instead of printing multiple times.
+'''
+split_text = args.to_print.split(" ") # Split at the spaces
+current_length = 0
+current_print = ''
+for word in split_text:
+    print("Word: " + word + ". current_length: " + str(current_length) + ". word length: " + str(len(word)))
+   
+    if(len(word)+current_length < line_length):
+        # If the word fits with room for a space, add both
+        current_print += word + " "
+        current_length += len(word)+1
+
+    elif(len(word)+current_length == line_length):
+        # If only the word fits, add just the word no space after
+        current_print += word
+        current_length += len(word)        
+
+    else:
+        # If the word doesn't fit, we need to add spaces to get to 
+        # the next line
+        while(current_length != line_length):
+            current_print += " "
+            current_length += 1
+
+        # Reset current line counter
+        current_length = 0
+
+        # Add word which was too long for last line to beginning of this line
+        if(len(word) == line_length):
+            current_print += word
+
+        elif(len(word)+1 == line_length):
+            current_print += word + " "
+
+        elif(len(word)+1 < line_length):
+            current_print += word + " "
+            current_length += len(word) + 1
+        
+        elif(len(word) > line_length):
+            # Edge case where word is longer than line length
+            # Print the word with a hyphen
+            # Find the number of lines this word will take
+            num_lines = int(math.ceil(len(word)/float(line_length)))
+            print("Num lines: " + str(num_lines))
+            
+            # Iterate for all lines with hyphen
+            for i in range(num_lines-1):
+                print(word[i*line_length:((i+1)*line_length)-1])
+                current_print += word[i*(line_length-1):((i+1)*line_length)-1] + '-'
+            
+            # Add the last line
+            word_length = len(word[((num_lines-1)*line_length)-1:])
+            print("Remaining: " + word[((num_lines-1)*line_length)-1:])
+            if(word_length == line_length):
+                current_print += word[((num_lines-1)*line_length)-1:]
+                current_length = 0
+            elif(word_length+1 == line_length):
+                current_print += word[((num_lines-1)*line_length)-1:] + ' '
+                current_length = 0
+            elif(word_length+1 < line_length):
+                current_print += word[((num_lines-1)*line_length)-1:] + ' '
+                current_length = word_length+1
+
+
 # Print the results
 # Cut the rows so the text wraps
 # None of the text formatting changes width, just text size
 print("Parsed: " + str(args))
-print("Printing: " + str(args.to_print))
+print("Printing: " + str(current_print))
 print("Feed: " + str(args.feed) + ", type: " + str(type(args.feed)))
 
 if(not args.test):
 	printer = adf.Adafruit_Thermal('/dev/serial0', 19200, timeout=5)
-	printer.println(args.to_print) # Print text
+	printer.println(current_print) # Print text
 	printer.feed(args.feed) # Feed required amount
 	printer.setDefault() # Return to default settings
