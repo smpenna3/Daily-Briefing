@@ -46,6 +46,10 @@ args = parser.parse_args()
 if(not args.feed): args.feed = 3
 else: args.feed = int(args.feed[0])
 
+# Setup printer if necessary
+if(not args.test):
+	printer = adf.Adafruit_Thermal('/dev/serial0', 19200, timeout=5)
+
 # Check font styling
 if(not args.test):
 	if(args.bold):
@@ -162,7 +166,6 @@ print("Printing: " + str(current_print))
 print("Feed: " + str(args.feed) + ", type: " + str(type(args.feed)))
 
 if(not args.test):
-	printer = adf.Adafruit_Thermal('/dev/serial0', 19200, timeout=5)
 	printer.println(current_print) # Print text
 	printer.feed(args.feed) # Feed required amount
 	printer.setDefault() # Return to default settings
