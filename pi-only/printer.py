@@ -24,7 +24,6 @@ Example: "-f 4" for four lines fed after print.
 import argparse
 import Adafruit_Thermal as adf
 
-printer = adf.Adafruit_Thermal('/dev/serial0', 19200, timeout=5)
 
 # Initilaize the Argument parser
 parser = argparse.ArgumentParser(description="Wrapper for Adafruit Thermal in Python3")
@@ -38,6 +37,7 @@ parser.add_argument('--bold', '-b', action='store_true')
 parser.add_argument('--inverse', '-i', action='store_true')
 parser.add_argument('--tall', '-t', action='store_true')
 parser.add_argument('--underline', '-u', action='store_true')
+parser.add_argument('--test', action='store_true') # Test and don't print
 parser.add_argument('--feed', '-f', nargs=1)
 parser.add_argument('--justify', '-j')
 
@@ -47,14 +47,15 @@ if(not args.feed): args.feed = 3
 else: args.feed = int(args.feed[0])
 
 # Check font styling
-if(args.bold):
-	printer.boldOn()
-if(args.inverse):
-	printer.inverseOn()
-if(args.tall):
-	printer.doubleHeightOn()
-if(args.underline):
-	printer.underlineOn()
+if(not args.test):
+	if(args.bold):
+		printer.boldOn()
+	if(args.inverse):
+		printer.inverseOn()
+	if(args.tall):
+		printer.doubleHeightOn()
+	if(args.underline):
+		printer.underlineOn()
 
 # Check size of text
 line_length = 32 # Set the default characters per line
@@ -62,17 +63,17 @@ if(sum([args.large, args.medium, args.small]) > 1):
 	raise ValueError("Too many sizes selected")
 else:
 	if(args.large):
-		printer.setSize('L')
+		if(not args.test): printer.setSize('L')
 		line_length = 16
 	elif(args.medium):
-		printer.setSize('M')
+		if(not args.test): printer.setSize('M')
 		line_length = 32
 	elif(args.small):
-		printer.setSize('S')
+		if(not args.test): printer.setSize('S')
 		line_length = 32
 
 # Check justification
-if(args.justify):
+if(args.justify and not args.test):
 	if(args.justify.lower() == 'l' or args.justify.lower() == 'left'):
 		printer.justify('L')
 	elif(args.justify.lower() == 'r' or args.justify.lower() == 'right'):
@@ -89,8 +90,8 @@ print("Parsed: " + str(args))
 print("Printing: " + str(args.to_print))
 print("Feed: " + str(args.feed) + ", type: " + str(type(args.feed)))
 
-printer.println(args.to_print)
-printer.feed(args.feed)
-
-# Return to default settings
-printer.setDefault()
+if(not args.test):
+	printer = adf.Adafruit_Thermal('/dev/serial0', 19200, timeout=5)
+	printer.println(args.to_print) # Print text
+	printer.feed(args.feed) # Feed required amount
+	printer.setDefault() # Return to default settings
