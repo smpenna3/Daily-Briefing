@@ -21,7 +21,7 @@ def print_text(text, size='medium', bold=False, inverse=False, tall=False, under
     if(underline): call += ' -u'
 
     # Check for feed
-    if(type(feed) not int):
+    if(type(feed) != int):
         raise TypeError("Feed value must be int, found " + str(type(feed)))
     call += ' -f ' + str(feed)
 
