@@ -3,7 +3,7 @@ Python3 library for the Adafruit Thermal Receipt Printer
 Requires the printer_wrapper python2 file
 '''
 
-import subprocess
+import os
 
 def print_text(text, size='small', bold=False, inverse=False, tall=False, underline=False, feed=3, justify='left'):
     # Generate the base call
@@ -31,4 +31,4 @@ def print_text(text, size='small', bold=False, inverse=False, tall=False, underl
     call += ' -j ' + justify
 
     # Send call
-    subprocess.Popen(call)
+    os.system(call)
