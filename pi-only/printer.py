@@ -33,4 +33,4 @@ def print_text(text, size='small', bold=False, inverse=False, tall=False, underl
     print(call)
 
     # Send call
-    os.system(call)
+    subprocess.call(call)
