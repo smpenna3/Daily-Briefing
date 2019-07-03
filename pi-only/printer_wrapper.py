@@ -99,8 +99,6 @@ split_text = args.to_print.split(" ") # Split at the spaces
 current_length = 0
 current_print = ''
 for word in split_text:
-    print("Word: " + word + ". current_length: " + str(current_length) + ". word length: " + str(len(word)))
-   
     if(len(word)+current_length < line_length):
         # If the word fits with room for a space, add both
         current_print += word + " "
@@ -137,16 +135,13 @@ for word in split_text:
             # Print the word with a hyphen
             # Find the number of lines this word will take
             num_lines = int(math.ceil(len(word)/float(line_length)))
-            print("Num lines: " + str(num_lines))
             
             # Iterate for all lines with hyphen
             for i in range(num_lines-1):
-                print(word[i*line_length:((i+1)*line_length)-1])
                 current_print += word[i*(line_length-1):((i+1)*line_length)-1] + '-'
             
             # Add the last line
             word_length = len(word[((num_lines-1)*line_length)-1:])
-            print("Remaining: " + word[((num_lines-1)*line_length)-1:])
             if(word_length == line_length):
                 current_print += word[((num_lines-1)*line_length)-1:]
                 current_length = 0
@@ -161,9 +156,10 @@ for word in split_text:
 # Print the results
 # Cut the rows so the text wraps
 # None of the text formatting changes width, just text size
-print("Parsed: " + str(args))
-print("Printing: " + str(current_print))
-print("Feed: " + str(args.feed) + ", type: " + str(type(args.feed)))
+if(args.test):
+    print("Parsed: " + str(args))
+    print("Printing: " + str(current_print))
+    print("Feed: " + str(args.feed) + ", type: " + str(type(args.feed)))
 
 if(not args.test):
 	printer.println(current_print) # Print text
